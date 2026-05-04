@@ -87,10 +87,24 @@ The size of the table is $12$, since the game only allows $12$ Personas at a tim
     </tr>
   </thead>
   <tbody id="ttableDef" class="clsttableDef">
-
+  
   </tbody>
 </table>
 ```
 
 :::
+
+
+## Compendium
+
+
+
+
+
+
+
+
+
+
+
 
