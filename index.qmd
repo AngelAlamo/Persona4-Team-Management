@@ -1,0 +1,96 @@
+---
+title: "Persona 4 Team Management"
+author: 
+  - name: "Ángel Álamo"
+format: 
+  html:
+    include-after-body: 
+      - file: "script.html"
+    css: "styles.css"
+editor: visual
+execute: 
+  echo: false
+---
+
+This page is dedicated to ease the management of your Personas team in the game Persona 4. In order to it, it is shown the following properties in different tables: Strengths and Weaknesses, Attacks and Defenses.
+
+
+
+## Management
+
+The size of the table is $12$, since the game only allows $12$ Personas at a time. However, you can add $3$ more Personas separately to compare the data or even replace it with one Persona of the table.
+
+
+::: {.panel-tabset}
+## Strengths and Weaknesses
+
+```{=html}
+
+<table border="1" id="tableStr&Wk" class="clstableStr&Wk">
+  <thead>
+    <tr>    <!-- Fila -->
+      <th>Persona</th>    <!-- Encabezado -->
+      <th>Phys</th>
+      <th>Fire</th>
+      <th>Ice</th>
+      <th>Elec</th>
+      <th>Wind</th>
+      <th>Light</th>
+      <th>Dark</th>
+    </tr>
+  </thead>
+  <tbody id="ttableStr&Wk" class="clsttableStr&Wk">
+
+  </tbody>
+</table>
+```
+
+
+## Attacks
+
+```{=html}
+
+<table border="1" id="tableAt" class="clstableAt">
+  <thead>
+    <tr>    <!-- Fila -->
+      <th>Persona</th>    <!-- Encabezado -->
+      <th>Phys</th>
+      <th>Fire</th>
+      <th>Ice</th>
+      <th>Elec</th>
+      <th>Wind</th>
+      <th>Light</th>
+      <th>Dark</th>
+    </tr>
+  </thead>
+  <tbody id="ttableAt" class="clsttableAt">
+
+  </tbody>
+</table>
+```
+
+## Defenses
+
+```{=html}
+
+<table border="1" id="tableDef" class="clstableAt">
+  <thead>
+    <tr>    <!-- Fila -->
+      <th>Persona</th>    <!-- Encabezado -->
+      <th>Phys</th>
+      <th>Fire</th>
+      <th>Ice</th>
+      <th>Elec</th>
+      <th>Wind</th>
+      <th>Light</th>
+      <th>Dark</th>
+    </tr>
+  </thead>
+  <tbody id="ttableDef" class="clsttableDef">
+
+  </tbody>
+</table>
+```
+
+:::
+

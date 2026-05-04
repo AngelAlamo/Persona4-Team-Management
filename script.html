@@ -1,0 +1,19 @@
+<script>
+function añadirFilas(name) {
+  var fila = "";
+  for (let i=1; i<13; i++) {
+    fila += "<tr>";
+    for (let j=1; j<9; j++) {
+      fila += "<td id=a"+name+i+","+j+"></td>";
+    }
+    document.getElementById("ttable" + name).innerHTML = fila + "</tr>";
+    
+  }
+}
+
+añadirFilas("Str&Wk");
+añadirFilas("At");
+añadirFilas("Def");
+
+document.getElementById("aStr&Wk1,1").innerHTML = "Persona1";
+</script>

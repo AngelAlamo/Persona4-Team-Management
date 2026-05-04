@@ -1,0 +1,18 @@
+
+table {
+  border: 1px solid #000;
+  table-layout: fixed;
+  border-collapse: collapse;
+  width: 100%;
+}
+table th {
+  text-align: center;
+}
+table tbody td {
+  border: 1px solid #000;
+  text-align: center;
+  overflow-wrap: break-word;
+  padding: 5px;
+  height: 40px;
+  width: 350px;
+}
