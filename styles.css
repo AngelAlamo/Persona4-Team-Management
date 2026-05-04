@@ -16,3 +16,13 @@ table tbody td {
   height: 40px;
   width: 350px;
 }
+
+
+.divPersonaSelectTable {
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  gap: 60px;
+  margin-top: 30px;
+  margin-bottom: 30px;
+}

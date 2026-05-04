@@ -20,6 +20,23 @@ This page is dedicated to ease the management of your Personas team in the game 
 
 The size of the table is $12$, since the game only allows $12$ Personas at a time. However, you can add $3$ more Personas separately to compare the data or even replace it with one Persona of the table.
 
+```{=html}
+<div class="divPersonaSelectTable">
+  <div>
+  <input list="optsPersonaSelectTable" id="PersonaSelectTable" placeholder='Persona'>
+  <datalist id='optsPersonaSelectTable""'>
+    <option value='1'>
+    <option value='2'>
+  </datalist>
+  </div>
+  <div>
+  <button id="buttonPersonaSelectTable"> Add </button>
+  </div>
+
+</div>
+```
+
+
 
 ::: {.panel-tabset}
 ## Strengths and Weaknesses
@@ -30,6 +47,7 @@ The size of the table is $12$, since the game only allows $12$ Personas at a tim
   <thead>
     <tr>    <!-- Fila -->
       <th>Persona</th>    <!-- Encabezado -->
+      <th>Arcana</th>
       <th>Phys</th>
       <th>Fire</th>
       <th>Ice</th>
@@ -54,6 +72,7 @@ The size of the table is $12$, since the game only allows $12$ Personas at a tim
   <thead>
     <tr>    <!-- Fila -->
       <th>Persona</th>    <!-- Encabezado -->
+      <th>Arcana</th>
       <th>Phys</th>
       <th>Fire</th>
       <th>Ice</th>
@@ -77,6 +96,7 @@ The size of the table is $12$, since the game only allows $12$ Personas at a tim
   <thead>
     <tr>    <!-- Fila -->
       <th>Persona</th>    <!-- Encabezado -->
+      <th>Arcana</th>
       <th>Phys</th>
       <th>Fire</th>
       <th>Ice</th>

@@ -74,6 +74,20 @@ ul.task-list li input[type="checkbox"] {
 <section id="management" class="level2">
 <h2 class="anchored" data-anchor-id="management">Management</h2>
 <p>The size of the table is <span class="math inline">\(12\)</span>, since the game only allows <span class="math inline">\(12\)</span> Personas at a time. However, you can add <span class="math inline">\(3\)</span> more Personas separately to compare the data or even replace it with one Persona of the table.</p>
+
+<div class="divPersonaSelectTable">
+  <div>
+  <input list="optsPersonaSelectTable" id="PersonaSelectTable" placeholder="Persona">
+  <datalist id="optsPersonaSelectTable&quot;&quot;">
+    <option value="1">
+    </option><option value="2">
+  </option></datalist>
+  </div>
+  <div>
+  <button id="buttonPersonaSelectTable"> Add </button>
+  </div>
+
+</div>
 <div class="tabset-margin-container"></div><div class="panel-tabset">
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="">Strengths and Weaknesses</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">Attacks</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-3" role="tab" aria-controls="tabset-1-3" aria-selected="false" href="">Defenses</a></li></ul>
 <div class="tab-content">
@@ -84,6 +98,7 @@ ul.task-list li input[type="checkbox"] {
 <thead>
 <tr class="header">
 <th data-quarto-table-cell-role="th">Persona</th>
+<th data-quarto-table-cell-role="th">Arcana</th>
 <th data-quarto-table-cell-role="th">Phys</th>
 <th data-quarto-table-cell-role="th">Fire</th>
 <th data-quarto-table-cell-role="th">Ice</th>
@@ -104,6 +119,7 @@ ul.task-list li input[type="checkbox"] {
 <thead>
 <tr class="header">
 <th data-quarto-table-cell-role="th">Persona</th>
+<th data-quarto-table-cell-role="th">Arcana</th>
 <th data-quarto-table-cell-role="th">Phys</th>
 <th data-quarto-table-cell-role="th">Fire</th>
 <th data-quarto-table-cell-role="th">Ice</th>
@@ -124,6 +140,7 @@ ul.task-list li input[type="checkbox"] {
 <thead>
 <tr class="header">
 <th data-quarto-table-cell-role="th">Persona</th>
+<th data-quarto-table-cell-role="th">Arcana</th>
 <th data-quarto-table-cell-role="th">Phys</th>
 <th data-quarto-table-cell-role="th">Fire</th>
 <th data-quarto-table-cell-role="th">Ice</th>
@@ -382,16 +399,15 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </div> <!-- /content -->
 
 <script>
+
+// ------------------------------------
+// Function to add rows
+
 function añadirFilas(name) {
   var fila = "";
   for (let i=1; i<13; i++) {
-    fila += "<tr>" + 
-    "<td id=a"+name+"11>"+
-    "<input list='opciones' name='cantidad' placeholder='Persona'>"+
-    "<datalist id='opciones'><option value='1'><option value='2'></datalist>"+
-    "</td>";
-    
-    for (let j=2; j<9; j++) {
+    fila += "<tr>";
+    for (let j=1; j<10; j++) {
       fila += "<td id=a"+name+i+","+j+"></td>";
     }
     document.getElementById("ttable" + name).innerHTML = fila + "</tr>";
@@ -403,7 +419,31 @@ añadirFilas("Str&Wk");
 añadirFilas("At");
 añadirFilas("Def");
 
-document.getElementById("aStr&Wk1,1").innerHTML = "Persona1";
+
+
+// ------------------------------------
+// AddEventListener to first column of each table
+
+function ValidationPersona(row, name) {
+  const datalist = document.getElementById('opts' + i + name);
+  
+  const valor = this.value;
+  
+  // Searching
+  const encontrado = Array.from(datalist.options).some(opt => opt.value === valor);
+  
+  if (valor === '' || !encontrado) {
+      console.log("Persona does not exist");
+  }
+}
+
+const input = document.getElementById('Persona' + i + name);
+
+const datalist = document.getElementById('opts1Str&Wk');
+
+
+
+
 </script>
 
 
