@@ -1,45 +1,157 @@
-<script>
+
+<script type="module">
 
 // ------------------------------------
-// Function to add rows
+// Modules
+
+import readXLSXFile from 'https://cdn.jsdelivr.net/npm/read-excel-file@5.7.0/+esm';
+
+
+// ------------------------------------
+// Add rows to tables
 
 function añadirFilas(name) {
   var fila = "";
-  for (let i=1; i<13; i++) {
+  for (let i=0; i<12; i++) {
     fila += "<tr>";
-    for (let j=1; j<10; j++) {
-      fila += "<td id=a"+name+i+","+j+"></td>";
-    }
-    document.getElementById("ttable" + name).innerHTML = fila + "</tr>";
     
+    if (name == "Str&Wk") {
+      for (let j=0; j<9; j++) {
+        fila += "<td id="+name+i+","+j+"></td>";
+      }
+      document.getElementById("ttable" + name).innerHTML = fila + "</tr>";
+    }
+    else {
+      for (let j=0; j<9; j++) {
+        fila += "<td id="+name+i+","+j+">";
+        
+        if(j == 0 || j == 1) { fila += "</td>"; }
+        else { fila += "<select id=select"+name+i+","+j+" disabled><option>No</option><option>1</option><option>All</option><option>1&All</option></select></td>"; }
+      }
+      document.getElementById("ttable" + name).innerHTML = fila + "</tr>";
+    }
   }
 }
 
-añadirFilas("Str&Wk");
-añadirFilas("At");
-añadirFilas("Def");
+var lista_table = ["Str&Wk", "At", "Def"];
+
+lista_table.forEach(añadirFilas);
+
+
+// ------------------------------------
+// Read excel Personas stats
+
+async function cargarDatos() {
+  const res = await fetch('/datos_personas_stats.xlsx');
+  const buffer = await res.arrayBuffer();
+  const rows = await readXLSXFile(buffer);
+  return rows;
+}
+
+const table_stats = await cargarDatos();
+
+
+// ------------------------------------
+// Add Personas to options datalist and conversion table_stats to map
+
+const datalist = document.getElementById("optsPersonaSelectTable");
+
+const datos_personas_stats = new Map();
+table_stats.slice(1).forEach(fila => {
+  const nombre = fila[0].replace("_", " ");
+  datos_personas_stats.set(nombre, fila);  // Map: name_persona: stats
+
+  // Add to datalist
+  const option = document.createElement("option");
+  option.value = nombre;
+  datalist.appendChild(option);
+});
+
+
+// ------------------------------------
+// Add Persona to tables
+
+function ValidationPersona(name_persona) {
+  const encontrado = Array.from(datalist.options).some(opt => opt.value === name_persona); // Searching
+  
+  if (name_persona === '' || !encontrado) {
+    console.log("Persona does not exist"); 
+    return false;  
+  }
+  else {
+    console.log("Persona selected");
+    return true;
+  }
+}
+
+let free_rows = Array.from({ length: 12 }, (_, i) => i);
+
+var list_added_personas = [];
+function AddPersona(name_persona) {
+  console.log("Añadiendo..");
+  if (!ValidationPersona(name_persona)) { return false; };
+  
+  if (list_added_personas.includes(name_persona)) { return false; }
+
+  if (row >= 12) {
+    return false;
+  }
+  
+  if (free_rows.length > 0) {
+    var row = free_rows[0];
+    lista_table.forEach(table => {
+    
+      var col = 0;
+      datos_personas_stats.get(name_persona).forEach(data => {
+        
+        if (table == "Str&Wk") {
+        document.getElementById(table + row + "," + col).innerHTML = data;
+        } 
+        else {
+          if (col == 0 || col == 1) {
+            document.getElementById(table + row + "," + col).innerHTML = datos_personas_stats.get(name_persona)[col];
+          } else {
+            document.getElementById("select" + table + row + "," + col).disabled = false;
+          }
+        }
+        col += 1;
+      })
+    })
+    list_added_personas.push(name_persona);
+    free_rows.shift();
+    return true;
+  }
+}
+
+const input = document.getElementById("PersonaSelectTable");
+
+input.addEventListener("keydown", function(event) {
+  if (event.key === "Enter") {
+    if (AddPersona(input.value)) { input.value = ""; }
+  }
+});
+
+const buttonAddPersona = document.getElementById("buttonAddPersonaSelectTable");
+
+buttonAddPersona.addEventListener("click", function() {
+  if (AddPersona(input.value)) { input.value = ""; } });
 
 
 
 // ------------------------------------
-// AddEventListener to first column of each table
+// Remove Persona
 
-function ValidationPersona(row, name) {
-  const datalist = document.getElementById('opts' + i + name);
+function RemovePersona(name_persona) {
+  if (!list_added_personas.includes(name_persona)) { return false; }
   
-  const valor = this.value;
   
-  // Searching
-  const encontrado = Array.from(datalist.options).some(opt => opt.value === valor);
   
-  if (valor === '' || !encontrado) {
-      console.log("Persona does not exist");
-  }
+  list_added_personas = list_added_personas.filter(name => name !== name_persona);
+  
 }
 
-const input = document.getElementById('Persona' + i + name);
+const buttonRemovePersona = document.getElementById("ButtonRemovePersonaSelectTable");
 
-const datalist = document.getElementById('opts1Str&Wk');
 
 
 

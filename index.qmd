@@ -4,7 +4,7 @@ author:
   - name: "Ángel Álamo"
 format: 
   html:
-    include-after-body: 
+    include-after-body:
       - file: "script.html"
     css: "styles.css"
 editor: visual
@@ -15,7 +15,6 @@ execute:
 This page is dedicated to ease the management of your Personas team in the game Persona 4. In order to it, it is shown the following properties in different tables: Strengths and Weaknesses, Attacks and Defenses.
 
 
-
 ## Management
 
 The size of the table is $12$, since the game only allows $12$ Personas at a time. However, you can add $3$ more Personas separately to compare the data or even replace it with one Persona of the table.
@@ -23,14 +22,18 @@ The size of the table is $12$, since the game only allows $12$ Personas at a tim
 ```{=html}
 <div class="divPersonaSelectTable">
   <div>
-  <input list="optsPersonaSelectTable" id="PersonaSelectTable" placeholder='Persona'>
-  <datalist id='optsPersonaSelectTable""'>
-    <option value='1'>
-    <option value='2'>
-  </datalist>
+    <input list="optsPersonaSelectTable" id="PersonaSelectTable" placeholder="Persona">
+    <datalist id="optsPersonaSelectTable">
+      
+    </datalist>
   </div>
+  
   <div>
-  <button id="buttonPersonaSelectTable"> Add </button>
+    <button id="buttonAddPersonaSelectTable"> Add </button>
+  </div>
+
+  <div>
+    <button id="ButtonRemovePersonaSelectTable"> Remove </button>
   </div>
 
 </div>
@@ -97,13 +100,14 @@ The size of the table is $12$, since the game only allows $12$ Personas at a tim
     <tr>    <!-- Fila -->
       <th>Persona</th>    <!-- Encabezado -->
       <th>Arcana</th>
-      <th>Phys</th>
-      <th>Fire</th>
-      <th>Ice</th>
-      <th>Elec</th>
-      <th>Wind</th>
-      <th>Light</th>
-      <th>Dark</th>
+      <th>Def Up</th>
+      <th>Attack Up</th>
+      <th>Hit/Evasion Up</th>
+      <th>Charge Up</th>
+      <th>Def Down</th>
+      <th>Attack Down</th>
+      <th>Hit/Evasion Down</th>
+      
     </tr>
   </thead>
   <tbody id="ttableDef" class="clsttableDef">

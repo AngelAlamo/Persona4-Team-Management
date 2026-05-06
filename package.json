@@ -1,0 +1,21 @@
+{
+  "name": "persona4-team-management",
+  "version": "1.0.0",
+  "description": "This repository aims to provide a website for manage efficiently your Personas in terms of strengths and weaknesses of types, attacks, defenses and modifiers.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AngelAlamo/Persona4-Team-Management.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/AngelAlamo/Persona4-Team-Management/issues"
+  },
+  "homepage": "https://github.com/AngelAlamo/Persona4-Team-Management#readme"
+}

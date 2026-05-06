@@ -14,7 +14,7 @@ table tbody td {
   overflow: hidden;
   padding: 5px;
   height: 40px;
-  width: 350px;
+  width: 400px;
 }
 
 
@@ -25,4 +25,9 @@ table tbody td {
   gap: 60px;
   margin-top: 30px;
   margin-bottom: 30px;
+}
+
+
+.tab-content {
+  width: 1000px;
 }
