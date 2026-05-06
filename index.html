@@ -543,7 +543,20 @@ buttonAddPersona.addEventListener("click", function() {
 
 
 // ------------------------------------
-// Add Attacks
+// Remove Persona
+
+function RemovePersona(name_persona) {
+  if (!list_added_personas.includes(name_persona)) { return false; }
+  
+  
+  
+  list_added_personas = list_added_personas.filter(name => name !== name_persona);
+  
+}
+
+const buttonRemovePersona = document.getElementById("ButtonRemovePersonaSelectTable");
+
+
 
 
 
