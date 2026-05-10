@@ -103,7 +103,7 @@ table_stats.slice(1).forEach(fila => {
   datos_personas_stats.set(nombre, [nombre].concat(fila.slice(1)));  // Map: name_persona: stats
 
   // Add to datalist
-  const option = document.createElement("option");
+  let option = document.createElement("option");
   option.value = nombre;
   datalist.appendChild(option);
 });
@@ -184,7 +184,7 @@ function AddIdxRow(arr, value) {
   let right = arr.length;
 
   while (left < right) {
-    const mid = Math.floor((left + right) / 2);
+    let mid = Math.floor((left + right) / 2);
 
     if (arr[mid] < value) {
       left = mid + 1;
@@ -240,18 +240,6 @@ buttonRemovePersona.addEventListener("click", function(){
 // ------------------------------------
 // Add inputs filters on html
 
-// var list_arcanas = ["Fool", "Magician", "Priestess", "Empress", "Emperor", "Hierophant", "Lovers", "Chariot", "Justice", "Hermit", "Fortune", "Strength", "Hanged Man", "Death", "Temperance", "Devil", "Tower", "Star", "Moon", "Sun", "Jester", "Aeon", "Judgment", "World"];
-
-//function AddSelectOptionsArcana(elem, arc) {
-//  const option = document.createElement("option");
-//  option.value = arc;
-//  elem.appendChild(option);
-//}
-
-function AddSelectOptions(filter) {
-  AddTextById("select" + filter, "<option value = 'stat'>" + filter + "</option><option value = '―'>―</option><option value = 'Str'>Str</option><option value = 'Weak'>Weak</option><option value = 'Null'>Null</option><option value = 'Rpl'>Rpl</option><option value = 'Dr'>Dr</option>");
-}
-
 function AddFilters(name, n) {
   let text = "";
   if (name == "Persona") {
@@ -262,13 +250,26 @@ function AddFilters(name, n) {
   document.getElementById("div" + n + "Compendium").innerHTML += text;
 }
 
-// list_arcanas.forEach(arc => {AddSelectOptionsArcana(selectArcana, arc)});
+function AddSelectOptions(filter) {
+  AddTextById("select" + filter, "<option value = 'stat'>" + filter + "</option><option value = '―'>―</option><option value = 'Str'>Str</option><option value = 'Weak'>Weak</option><option value = 'Null'>Null</option><option value = 'Rpl'>Rpl</option><option value = 'Dr'>Dr</option>");
+}
+
+function AddSelectOptionsArcana(elem, arc) {
+  let option = document.createElement("option");
+  option.value = arc;
+  if (arc != "stat") { option.text = arc; } else { option.text = "Arcana"; }
+  elem.appendChild(option);
+}
+
+var list_arcanas = ["stat", "Fool", "Magician", "Priestess", "Empress", "Emperor", "Hierophant", "Lovers", "Chariot", "Justice", "Hermit", "Fortune", "Strength", "Hanged Man", "Death", "Temperance", "Devil", "Tower", "Star", "Moon", "Sun", "Jester", "Aeon", "Judgment", "World"];
 
 var lista_div1 = ["Persona", "Arcana", "Physical", "Fire", "Ice"];
 var lista_div2 = ["Thunder", "Wind", "Light", "Dark"];
 
-AddFilters("Persona", 1);
-lista_div1.slice(1).forEach(filter => { AddFilters(filter, 1); AddSelectOptions(filter); });
+AddFilters("Persona", 1); AddFilters("Arcana", 1);
+list_arcanas.forEach(arc => { AddSelectOptionsArcana(document.getElementById("selectArcana"), arc); });
+
+lista_div1.slice(2).forEach(filter => { AddFilters(filter, 1); AddSelectOptions(filter); });
 lista_div2.forEach(filter => { AddFilters(filter, 2); AddSelectOptions(filter); });
 
 
@@ -287,7 +288,6 @@ datos_personas_stats.forEach(persona => {
 
 
 var inputPersona = document.getElementById("inputPersona");
-var selectArcana = document.getElementById("selectArcana");
 var selectPhysical = document.getElementById("selectPhysical");
 var selectFire = document.getElementById("selectFire");
 var selectIce = document.getElementById("selectIce");
@@ -297,8 +297,6 @@ var selectLight = document.getElementById("selectLight");
 var selectDark = document.getElementById("selectDark");
 
 var list_selects = [selectArcana, selectPhysical, selectFire, selectIce, selectThunder, selectWind, selectLight, selectDark];
-
-console.log(datos_personas_stats.get("Izanagi").length);
 
 function ValidationFilters(stats_persona) {
   if (!stats_persona[0].toLowerCase().includes(inputPersona.value.toLowerCase()) && inputPersona.value != "") { return false; }
@@ -339,7 +337,7 @@ function FilterCompendium() {
 inputPersona.addEventListener("input", function() { FilterCompendium(); });
 list_selects.forEach(select => { select.addEventListener("change", function() { FilterCompendium(); }) });
 
-
+FilterCompendium();
 
 
 
