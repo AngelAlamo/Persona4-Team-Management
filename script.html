@@ -7,35 +7,76 @@
 import readXLSXFile from 'https://cdn.jsdelivr.net/npm/read-excel-file@5.7.0/+esm';
 
 
+// Functions
+
+function AddTextById(id, text) { document.getElementById(id).innerHTML = text; }
+
+const map_colors = new Map();
+const list_stats = ["―", "Str", "Weak", "Rpl", "Dr", "Null"];
+
+map_colors.set("―", "#F8F8FF");
+map_colors.set("Str", "#AEC6FF");
+map_colors.set("Weak", "#FFBCB3");
+map_colors.set("Rpl", "#FFF1A8");
+map_colors.set("Dr", "#DCC6F8");
+map_colors.set("Null", "#2B2B2B");
+
+function ChangeColorCell(idcell, stat) {
+  let cell = document.getElementById(idcell);
+  
+  if (stat == "none") { 
+    cell.style.backgroundColor = "white";
+    cell.style.color = "black";
+    return;
+  }
+  
+  if (list_stats.includes(stat)) {
+  
+  cell.style.backgroundColor = map_colors.get(stat); 
+  if (stat == "Null") { cell.style.color = "white"; }
+  }
+}
+
+
 // ------------------------------------
 // Add rows to tables
 
-function añadirFilas(name) {
-  var fila = "";
-  for (let i=0; i<12; i++) {
+var num_rows = 12;
+
+function TextOnCells(name, i, j, n) { 
+  if (n == 1) { return "<td id="+name+i+","+j+">"; }
+  else { return "<select id=select"+name+i+","+j+" disabled><option>No</option><option>1</option><option>All</option><option>1&All</option></select></td>"; }
+}
+
+function AddFilas(name, num_cols) {
+  let fila = "";
+  for (let i=0; i<num_rows; i++) 
+  {
     fila += "<tr>";
     
     if (name == "Str&Wk") {
-      for (let j=0; j<9; j++) {
-        fila += "<td id="+name+i+","+j+"></td>";
-      }
-      document.getElementById("ttable" + name).innerHTML = fila + "</tr>";
+      for (let j=0; j<num_cols; j++) 
+      { fila += TextOnCells(name, i, j, 1) + "</td>"; }
+      AddTextById("ttable" + name, fila + "</tr>");
     }
     else {
-      for (let j=0; j<9; j++) {
-        fila += "<td id="+name+i+","+j+">";
+      for (let j=0; j<num_cols; j++) {
+        fila += TextOnCells(name, i, j, 1);
         
         if(j == 0 || j == 1) { fila += "</td>"; }
-        else { fila += "<select id=select"+name+i+","+j+" disabled><option>No</option><option>1</option><option>All</option><option>1&All</option></select></td>"; }
+        else { fila += TextOnCells(name, i, j, 2); }
       }
-      document.getElementById("ttable" + name).innerHTML = fila + "</tr>";
+      AddTextById("ttable" + name, fila + "</tr>");
     }
   }
 }
 
 var lista_table = ["Str&Wk", "At", "Def"];
+var lengths_table = [9, 10, 8];
 
-lista_table.forEach(añadirFilas);
+for (let itable = 0; itable < lista_table.length; itable++) {
+  AddFilas(lista_table[itable], lengths_table[itable]);
+}
 
 
 // ------------------------------------
@@ -59,7 +100,7 @@ const datalist = document.getElementById("optsPersonaSelectTable");
 const datos_personas_stats = new Map();
 table_stats.slice(1).forEach(fila => {
   const nombre = fila[0].replace("_", " ");
-  datos_personas_stats.set(nombre, fila);  // Map: name_persona: stats
+  datos_personas_stats.set(nombre, [nombre].concat(fila.slice(1)));  // Map: name_persona: stats
 
   // Add to datalist
   const option = document.createElement("option");
@@ -85,39 +126,36 @@ function ValidationPersona(name_persona) {
 }
 
 let free_rows = Array.from({ length: 12 }, (_, i) => i);
-
-var list_added_personas = [];
+var list_added_personas = Array(12).fill("");
+var row = 0;
 function AddPersona(name_persona) {
   console.log("Añadiendo..");
   if (!ValidationPersona(name_persona)) { return false; };
-  
   if (list_added_personas.includes(name_persona)) { return false; }
-
-  if (row >= 12) {
-    return false;
-  }
+  if (row >= 12) { return false; }
   
-  if (free_rows.length > 0) {
-    var row = free_rows[0];
-    lista_table.forEach(table => {
+  if (free_rows.length > 0) 
+  {
+    row = free_rows[0];
     
-      var col = 0;
-      datos_personas_stats.get(name_persona).forEach(data => {
+    for (let itable = 0; itable < lista_table.length; itable++) {
+      let table = lista_table[itable];
+      let col = 0;
+      
+      while (col < lengths_table[itable]) {
         
-        if (table == "Str&Wk") {
-        document.getElementById(table + row + "," + col).innerHTML = data;
-        } 
-        else {
-          if (col == 0 || col == 1) {
-            document.getElementById(table + row + "," + col).innerHTML = datos_personas_stats.get(name_persona)[col];
-          } else {
-            document.getElementById("select" + table + row + "," + col).disabled = false;
-          }
+        if (table == "Str&Wk" || col == 0 || col == 1) {
+          let data = datos_personas_stats.get(name_persona)[col];
+          AddTextById(table + row + "," + col, data.replace("_", " ").bold());
+          ChangeColorCell(table + row + "," + col, data);
+        } else {
+          document.getElementById("select" + table + row + "," + col).disabled = false;
         }
         col += 1;
-      })
-    })
-    list_added_personas.push(name_persona);
+      }
+    }
+    
+    list_added_personas[row] = name_persona;
     free_rows.shift();
     return true;
   }
@@ -137,20 +175,169 @@ buttonAddPersona.addEventListener("click", function() {
   if (AddPersona(input.value)) { input.value = ""; } });
 
 
-
 // ------------------------------------
 // Remove Persona
 
+// Binary search
+function AddIdxRow(arr, value) {
+  let left = 0;
+  let right = arr.length;
+
+  while (left < right) {
+    const mid = Math.floor((left + right) / 2);
+
+    if (arr[mid] < value) {
+      left = mid + 1;
+    } else {
+      right = mid;
+    }
+  }
+
+  arr.splice(left, 0, value);
+}
+
+
 function RemovePersona(name_persona) {
-  if (!list_added_personas.includes(name_persona)) { return false; }
+  var idx_persona = list_added_personas.indexOf(name_persona);
   
+  if (idx_persona == -1) { return false; }
   
+  list_added_personas[idx_persona] = "";
+  AddIdxRow(free_rows, idx_persona);
   
-  list_added_personas = list_added_personas.filter(name => name !== name_persona);
+  for (let itable = 0; itable < lista_table.length; itable++) {
+    
+    let table = lista_table[itable];
+    let col = 0;
+    while (col < lengths_table[itable]) {
+    
+      if (table == "Str&Wk" || col == 0 || col == 1) {
+        AddTextById(table + idx_persona + "," + col, "");
+        ChangeColorCell(table + idx_persona + "," + col, "none");
+        
+      } else {
+        document.getElementById("select" + table + idx_persona + "," + col).disabled = true;
+      }
+      col += 1;
+    }
+  }
   
+  return true;
 }
 
 const buttonRemovePersona = document.getElementById("ButtonRemovePersonaSelectTable");
+
+buttonRemovePersona.addEventListener("click", function(){
+  if (RemovePersona(input.value)) { input.value = ""; } 
+});
+
+
+
+
+// --------------------- Compendium ---------------------
+
+
+// ------------------------------------
+// Add inputs filters on html
+
+// var list_arcanas = ["Fool", "Magician", "Priestess", "Empress", "Emperor", "Hierophant", "Lovers", "Chariot", "Justice", "Hermit", "Fortune", "Strength", "Hanged Man", "Death", "Temperance", "Devil", "Tower", "Star", "Moon", "Sun", "Jester", "Aeon", "Judgment", "World"];
+
+//function AddSelectOptionsArcana(elem, arc) {
+//  const option = document.createElement("option");
+//  option.value = arc;
+//  elem.appendChild(option);
+//}
+
+function AddSelectOptions(filter) {
+  AddTextById("select" + filter, "<option value = 'stat'>" + filter + "</option><option value = '―'>―</option><option value = 'Str'>Str</option><option value = 'Weak'>Weak</option><option value = 'Null'>Null</option><option value = 'Rpl'>Rpl</option><option value = 'Dr'>Dr</option>");
+}
+
+function AddFilters(name, n) {
+  let text = "";
+  if (name == "Persona") {
+    text += "<div><input list='opts" + name + "' class='InputsCompendium' id='input" + name + "' placeholder='" + name + "'><datalist id='opts" + name + "'></datalist></div>";
+  } else {
+    text += "<div><select id = 'select" + name + "' class='InputsCompendium'></select></div>";
+  }
+  document.getElementById("div" + n + "Compendium").innerHTML += text;
+}
+
+// list_arcanas.forEach(arc => {AddSelectOptionsArcana(selectArcana, arc)});
+
+var lista_div1 = ["Persona", "Arcana", "Physical", "Fire", "Ice"];
+var lista_div2 = ["Thunder", "Wind", "Light", "Dark"];
+
+AddFilters("Persona", 1);
+lista_div1.slice(1).forEach(filter => { AddFilters(filter, 1); AddSelectOptions(filter); });
+lista_div2.forEach(filter => { AddFilters(filter, 2); AddSelectOptions(filter); });
+
+
+// ------------------------------------
+// Add options to Persona input
+var datalistCompendium = document.getElementById("optsPersona");
+datos_personas_stats.forEach(persona => {
+  const option = document.createElement("option");
+  option.value = persona[0];
+  datalistCompendium.appendChild(option);
+});
+
+
+// ------------------------------------
+// Add Persona to Compendium
+
+
+var inputPersona = document.getElementById("inputPersona");
+var selectArcana = document.getElementById("selectArcana");
+var selectPhysical = document.getElementById("selectPhysical");
+var selectFire = document.getElementById("selectFire");
+var selectIce = document.getElementById("selectIce");
+var selectThunder = document.getElementById("selectThunder");
+var selectWind = document.getElementById("selectWind");
+var selectLight = document.getElementById("selectLight");
+var selectDark = document.getElementById("selectDark");
+
+var list_selects = [selectArcana, selectPhysical, selectFire, selectIce, selectThunder, selectWind, selectLight, selectDark];
+
+console.log(datos_personas_stats.get("Izanagi").length);
+
+function ValidationFilters(stats_persona) {
+  if (!stats_persona[0].toLowerCase().includes(inputPersona.value.toLowerCase()) && inputPersona.value != "") { return false; }
+  
+  for (let i=1; i < stats_persona.length; i++) {
+    if (stats_persona[i] != list_selects[i-1].value && list_selects[i-1].value != "" && list_selects[i-1].value != "stat") { return false; }
+  }
+  
+  return true;
+}
+
+var tbodyCompendium = document.getElementById("ttableCompendium");
+function AddPersonaToCompendium(stats_persona) {
+  if (!ValidationFilters(stats_persona)) { return false; }
+  
+  let text = "<tr>";
+  for (let j=0; j < stats_persona.length; j++) {
+    if (j==0 || j== 1) {
+      text += "<td>" + stats_persona[j].bold() + "</td>";
+    } else {
+      if (stats_persona[j] == "Null") {
+        text += "<td style='background-color: " + map_colors.get(stats_persona[j]) + "; color: white;'>" + stats_persona[j].bold() + "</td>";
+      } else {
+        text += "<td style='background-color: " + map_colors.get(stats_persona[j]) + ";'>" + stats_persona[j].bold() + "</td>"; 
+        
+      }
+    }
+  }
+  
+  tbodyCompendium.innerHTML += text + "</tr>";
+}
+
+function FilterCompendium() {
+  console.log("Comp");
+  tbodyCompendium.innerHTML = ""; 
+  datos_personas_stats.forEach(stats_persona => AddPersonaToCompendium(stats_persona)); }
+
+inputPersona.addEventListener("input", function() { FilterCompendium(); });
+list_selects.forEach(select => { select.addEventListener("change", function() { FilterCompendium(); }) });
 
 
 

@@ -12,12 +12,12 @@ execute:
   echo: false
 ---
 
-This page is dedicated to ease the management of your Personas team in the game Persona 4. In order to it, it is shown the following properties in different tables: Strengths and Weaknesses, Attacks and Defenses.
+This page is dedicated to ease the management of your Personas in the game Persona 4. In order to it, it is shown the following properties in different tables: Strengths and Weaknesses, Attacks and Defenses.
 
 
 ## Management
 
-The size of the table is $12$, since the game only allows $12$ Personas at a time. However, you can add $3$ more Personas separately to compare the data or even replace it with one Persona of the table.
+<!-- The size of the table is $12$, since the game only allows $12$ Personas at a time. However, you can add $3$ more Personas separately to compare the data or even replace it with one Persona of the table. -->
 
 ```{=html}
 <div class="divPersonaSelectTable">
@@ -46,7 +46,7 @@ The size of the table is $12$, since the game only allows $12$ Personas at a tim
 
 ```{=html}
 
-<table border="1" id="tableStr&Wk" class="clstableStr&Wk">
+<table border="1" id="tableStr&Wk">
   <thead>
     <tr>    <!-- Fila -->
       <th>Persona</th>    <!-- Encabezado -->
@@ -54,13 +54,13 @@ The size of the table is $12$, since the game only allows $12$ Personas at a tim
       <th>Phys</th>
       <th>Fire</th>
       <th>Ice</th>
-      <th>Elec</th>
+      <th>Thunder</th>
       <th>Wind</th>
       <th>Light</th>
       <th>Dark</th>
     </tr>
   </thead>
-  <tbody id="ttableStr&Wk" class="clsttableStr&Wk">
+  <tbody id="ttableStr&Wk">
 
   </tbody>
 </table>
@@ -71,7 +71,7 @@ The size of the table is $12$, since the game only allows $12$ Personas at a tim
 
 ```{=html}
 
-<table border="1" id="tableAt" class="clstableAt">
+<table border="1" id="tableAt">
   <thead>
     <tr>    <!-- Fila -->
       <th>Persona</th>    <!-- Encabezado -->
@@ -83,9 +83,10 @@ The size of the table is $12$, since the game only allows $12$ Personas at a tim
       <th>Wind</th>
       <th>Light</th>
       <th>Dark</th>
+      <th>Almighty</th>
     </tr>
   </thead>
-  <tbody id="ttableAt" class="clsttableAt">
+  <tbody id="ttableAt">
 
   </tbody>
 </table>
@@ -95,7 +96,7 @@ The size of the table is $12$, since the game only allows $12$ Personas at a tim
 
 ```{=html}
 
-<table border="1" id="tableDef" class="clstableAt">
+<table border="1" id="tableDef">
   <thead>
     <tr>    <!-- Fila -->
       <th>Persona</th>    <!-- Encabezado -->
@@ -103,14 +104,13 @@ The size of the table is $12$, since the game only allows $12$ Personas at a tim
       <th>Def Up</th>
       <th>Attack Up</th>
       <th>Hit/Evasion Up</th>
-      <th>Charge Up</th>
       <th>Def Down</th>
       <th>Attack Down</th>
       <th>Hit/Evasion Down</th>
       
     </tr>
   </thead>
-  <tbody id="ttableDef" class="clsttableDef">
+  <tbody id="ttableDef">
   
   </tbody>
 </table>
@@ -120,6 +120,38 @@ The size of the table is $12$, since the game only allows $12$ Personas at a tim
 
 
 ## Compendium
+
+```{=html}
+<div class="divCompendium" id="div1Compendium">
+
+</div>
+
+<div class = "divCompendium" id="div2Compendium">
+
+</div>
+```
+
+
+```{=html}
+<table border="1" id="tableCompendium">
+  <thead>
+    <tr>
+      <th>Persona</th>
+      <th>Arcana</th>
+      <th>Phys</th>
+      <th>Fire</th>
+      <th>Ice</th>
+      <th>Thunder</th>
+      <th>Wind</th>
+      <th>Light</th>
+      <th>Dark</th>
+    </tr>
+  </thead>
+  <tbody id="ttableCompendium">
+
+  </tbody>
+</table>
+```
 
 
 

@@ -27,6 +27,19 @@ table tbody td {
   margin-bottom: 30px;
 }
 
+.divCompendium {
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  gap: 60px;
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
+
+.InputsCompendium {
+  width: 100px;
+}
+
 
 .tab-content {
   width: 1000px;
