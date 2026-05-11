@@ -11,16 +11,6 @@ import readXLSXFile from 'https://cdn.jsdelivr.net/npm/read-excel-file@5.7.0/+es
 
 function AddTextById(id, text) { document.getElementById(id).innerHTML = text; }
 
-const map_colors = new Map();
-const list_stats = ["―", "Str", "Weak", "Rpl", "Dr", "Null"];
-
-map_colors.set("―", "#F8F8FF");
-map_colors.set("Str", "#AEC6FF");
-map_colors.set("Weak", "#FFBCB3");
-map_colors.set("Rpl", "#FFF1A8");
-map_colors.set("Dr", "#DCC6F8");
-map_colors.set("Null", "#2B2B2B");
-
 function ChangeColorCell(idcell, stat) {
   let cell = document.getElementById(idcell);
   
@@ -29,58 +19,76 @@ function ChangeColorCell(idcell, stat) {
     cell.style.color = "black";
     return;
   } else {
-    cell.style.backgroundColor = map_colors.get(stat);
+    cell.style.backgroundColor = map_colors[stat];
     if (stat == "Null") { cell.style.color = "white"; }
   }
 }
 
+const map_colors = {
+  "―": "#F8F8FF",
+  "Str": "#AEC6FF",
+  "Weak": "#FFBCB3",
+  "Rpl": "#FFF1A8",
+  "Dr": "#DCC6F8",
+  "Null": "#2B2B2B"
+};
+const lstats = ["―", "Str", "Weak", "Rpl", "Dr", "Null"];
 
 // ------------------------------------
 // Add rows to tables
 
-var num_rows = 12;
-
-function TextOnCells(name, i, j, n) { 
-  if (n == 1) { return "<td id="+name+i+","+j+">"; }
-  else { return "<select id=select"+name+i+","+j+" disabled><option>No</option><option>1</option><option>All</option><option>1&All</option></select></td>"; }
-}
-
 function AddRows(name, num_cols) {
-  let fila = "";
+  let ttable = document.getElementById("ttable" + name);
+  
+  let row = document.createElement("tr");
   for (let i=0; i<num_rows; i++) 
   {
-    fila += "<tr>";
-    
     if (name == "Str&Wk") {
-      for (let j=0; j<num_cols; j++) 
-      { fila += TextOnCells(name, i, j, 1) + "</td>"; }
-      AddTextById("ttable" + name, fila + "</tr>");
-    }
+      for (let j=0; j<num_cols; j++) { 
+        let td = document.createElement("td");
+        td.id = name + i + "," + j;
+        row.appendChild(td); 
+      }
+    } 
     else {
       for (let j=0; j<num_cols; j++) {
-        fila += TextOnCells(name, i, j, 1);
-        
-        if(j == 0 || j == 1) { fila += "</td>"; }
-        else { fila += TextOnCells(name, i, j, 2); }
+        let td = document.createElement("td");
+        td.id = name + i + "," + j;
+        if(j == 0 || j == 1) { row.appendChild(td); }
+        else { 
+          let select = document.createElement("select");
+          select.disabled = true;
+          select.id = "select" + name + i + "," + j;
+          opts_stats.forEach(value_opt => {
+            let opt = document.createElement("option");
+            opt.value = value_opt; opt.text = value_opt;
+            select.appendChild(opt);
+          });
+          td.appendChild(select);
+          row.appendChild(td);
+        }
       }
-      AddTextById("ttable" + name, fila + "</tr>");
     }
+    ttable.appendChild(row);
+    row = document.createElement("tr");
   }
 }
 
-var lista_table = ["Str&Wk", "At", "Def"];
-var lengths_table = [9, 10, 8];
+var num_rows = 12;
+var opts_stats = ["No", "1", "All", "1&All"];
 
-for (let itable = 0; itable < lista_table.length; itable++) {
-  AddRows(lista_table[itable], lengths_table[itable]);
-}
+var ltable = ["Str&Wk", "At", "Def"];
+var len_ltable = ltable.length;
+var len_table = [9, 10, 8];
+
+for (let itable = 0; itable<len_ltable; itable++) { AddRows(ltable[itable], len_table[itable]); }
 
 
 // ------------------------------------
 // Read excel Personas stats
 
 async function cargarDatos() {
-  const res = await fetch('/datos_personas_stats.xlsx');
+  const res = await fetch('./datos_personas_stats.xlsx');
   const buffer = await res.arrayBuffer();
   const rows = await readXLSXFile(buffer);
   return rows;
@@ -92,17 +100,17 @@ const table_stats = await cargarDatos();
 // ------------------------------------
 // Add Personas to options datalist and conversion table_stats to map
 
-const datalist = document.getElementById("optsPersonaSelectTable");
+const datalist_input = document.getElementById("optsPersonaSelectTable");
 
-const datos_personas_stats = new Map();
+const map_stats = new Map();
 table_stats.slice(1).forEach(fila => {
   const nombre = fila[0].replace("_", " ");
-  datos_personas_stats.set(nombre, [nombre].concat(fila.slice(1)));  // Map: name_persona: stats
+  map_stats.set(nombre, [nombre].concat(fila.slice(1)));  // Map: name_persona: stats
 
   // Add to datalist
   let option = document.createElement("option");
   option.value = nombre;
-  datalist.appendChild(option);
+  datalist_input.appendChild(option);
 });
 
 
@@ -110,66 +118,55 @@ table_stats.slice(1).forEach(fila => {
 // Add Persona to tables
 
 function ValidationPersona(name_persona) {
-  const encontrado = Array.from(datalist.options).some(opt => opt.value === name_persona); // Searching
+  const found = Array.from(datalist_input.options).some(opt => opt.value === name_persona);
   
-  if (name_persona === '' || !encontrado) {
-    console.log("Persona does not exist"); 
-    return false;  
-  }
-  else {
-    console.log("Persona selected");
+  if (name_persona === '' || !found) { return false; }
+  return true;
+}
+
+function AddPersona(name_persona) {
+  if (!ValidationPersona(name_persona) || 
+    list_added_personas.includes(name_persona)) { return false; };
+  
+  if (free_rows.length > 0) {
+    new_row = free_rows[0];
+    
+    for (let itable=0; itable<len_ltable; itable++) {
+      
+      let table = ltable[itable];
+      let col = 0;
+      while (col < len_table[itable]) {
+        
+        let id = table + new_row + "," + col;
+        if (table == "Str&Wk" || col == 0 || col == 1) {
+          let data = map_stats.get(name_persona)[col];
+          AddTextById(id, data.bold());
+          ChangeColorCell(table + new_row + "," + col, data);
+        } 
+        else { document.getElementById("select" + id).disabled = false; }
+        col += 1;
+      }
+    }
+    list_added_personas[new_row] = name_persona;
+    free_rows.shift();
     return true;
   }
 }
 
 let free_rows = Array.from({ length: 12 }, (_, i) => i);
 var list_added_personas = Array(12).fill("");
-var row = 0;
-function AddPersona(name_persona) {
-  console.log("Añadiendo..");
-  if (!ValidationPersona(name_persona)) { return false; };
-  if (list_added_personas.includes(name_persona)) { return false; }
-  if (row >= 12) { return false; }
-  
-  if (free_rows.length > 0) 
-  {
-    row = free_rows[0];
-    
-    for (let itable = 0; itable < lista_table.length; itable++) {
-      let table = lista_table[itable];
-      let col = 0;
-      
-      while (col < lengths_table[itable]) {
-        
-        if (table == "Str&Wk" || col == 0 || col == 1) {
-          let data = datos_personas_stats.get(name_persona)[col];
-          AddTextById(table + row + "," + col, data.replace("_", " ").bold());
-          ChangeColorCell(table + row + "," + col, data);
-        } else {
-          document.getElementById("select" + table + row + "," + col).disabled = false;
-        }
-        col += 1;
-      }
-    }
-    
-    list_added_personas[row] = name_persona;
-    free_rows.shift();
-    return true;
-  }
-}
-
+var new_row = 0;
 const input = document.getElementById("PersonaSelectTable");
 
 input.addEventListener("keydown", function(event) {
-  if (event.key === "Enter") {
-    if (AddPersona(input.value)) { input.value = ""; }
-  }
+  if (event.key === "Enter" && AddPersona(input.value)) { input.value = ""; }
 });
 
 const buttonAddPersona = document.getElementById("buttonAddPersonaSelectTable");
 
 buttonAddPersona.addEventListener("click", function() {
-  if (AddPersona(input.value)) { input.value = ""; } });
+  if (AddPersona(input.value)) { input.value = ""; } 
+});
 
 
 // ------------------------------------
@@ -177,48 +174,43 @@ buttonAddPersona.addEventListener("click", function() {
 
 // Binary search
 function AddIdxRow(arr, value) {
-  let left = 0;
-  let right = arr.length;
 
+  let left = 0; let right = arr.length;
   while (left < right) {
+  
     let mid = Math.floor((left + right) / 2);
-
-    if (arr[mid] < value) {
-      left = mid + 1;
-    } else {
-      right = mid;
-    }
+    if (arr[mid] < value) { left = mid + 1; } 
+    else { right = mid; }
   }
-
   arr.splice(left, 0, value);
 }
 
 
 function RemovePersona(name_persona) {
-  var idx_persona = list_added_personas.indexOf(name_persona);
   
+  let idx_persona = list_added_personas.indexOf(name_persona);
   if (idx_persona == -1) { return false; }
   
   list_added_personas[idx_persona] = "";
   AddIdxRow(free_rows, idx_persona);
   
-  for (let itable = 0; itable < lista_table.length; itable++) {
+  for (let itable=0; itable<len_ltable; itable++) {
     
-    let table = lista_table[itable];
+    let table = ltable[itable];
     let col = 0;
-    while (col < lengths_table[itable]) {
+    while (col < len_table[itable]) {
     
+      let id = table + idx_persona + "," + col;
       if (table == "Str&Wk" || col == 0 || col == 1) {
-        AddTextById(table + idx_persona + "," + col, "");
-        ChangeColorCell(table + idx_persona + "," + col, "none");
-        
-      } else {
-        document.getElementById("select" + table + idx_persona + "," + col).disabled = true;
+        AddTextById(id, "");
+        ChangeColorCell(id, "none");
+      } 
+      else {
+        document.getElementById("select" + id).disabled = true;
       }
       col += 1;
     }
   }
-  
   return true;
 }
 
@@ -238,42 +230,77 @@ buttonRemovePersona.addEventListener("click", function(){
 // Add inputs filters on html
 
 function AddFilters(name, n) {
-  let text = "";
+  let div = document.createElement("div");
   if (name == "Persona") {
-    text += "<div><input list='opts" + name + "' class='InputsCompendium' id='input" + name + "' placeholder='" + name + "'><datalist id='opts" + name + "'></datalist></div>";
+  
+    let inputComp = document.createElement("input");
+    inputComp.setAttribute("list", "opts" + name); inputComp.class = "InputsCompendium";
+    inputComp.id = "input" + name; inputComp.placeholder = name;
+    let dl = document.createElement("datalist"); 
+    dl.id = "opts" + name;
+    inputComp.appendChild(dl); div.appendChild(inputComp);
   } else {
-    text += "<div><select id = 'select" + name + "' class='InputsCompendium'></select></div>";
+  
+    let select = document.createElement("select");
+    select.id = "select" + name; select.class = "InputsCompendium";
+    div.appendChild(select);
   }
-  document.getElementById("div" + n + "Compendium").innerHTML += text;
+  document.getElementById("div" + n + "Compendium").appendChild(div);
 }
 
-function AddSelectOptions(filter) {
-  AddTextById("select" + filter, "<option value = 'stat'>" + filter + "</option><option value = '―'>―</option><option value = 'Str'>Str</option><option value = 'Weak'>Weak</option><option value = 'Null'>Null</option><option value = 'Rpl'>Rpl</option><option value = 'Dr'>Dr</option>");
-}
-
-function AddSelectOptionsArcana(elem, arc) {
+function AddSelectOptions(select, filter) {
+ 
   let option = document.createElement("option");
-  option.value = arc;
-  if (arc != "stat") { option.text = arc; } else { option.text = "Arcana"; }
-  elem.appendChild(option);
+  option.value = "stat"; option.text = filter;
+  select.appendChild(option);
+  
+  lstats.forEach(stat => {
+    option = document.createElement("option");
+    option.value = stat; option.text = stat;
+    select.appendChild(option);
+    });
 }
 
-var list_arcanas = ["stat", "Fool", "Magician", "Priestess", "Empress", "Emperor", "Hierophant", "Lovers", "Chariot", "Justice", "Hermit", "Fortune", "Strength", "Hanged Man", "Death", "Temperance", "Devil", "Tower", "Star", "Moon", "Sun", "Jester", "Aeon", "Judgment", "World"];
+function AddSelectOptionsArcana(selectarc) {
+  
+  larcanas.forEach(arc => {
+    let option = document.createElement("option");
+    option.value = arc;
+    if (arc != "stat") { option.text = arc; } else { option.text = "Arcana"; }
+    selectarc.appendChild(option);
+  });
+}
 
-var lista_div1 = ["Persona", "Arcana", "Physical", "Fire", "Ice"];
-var lista_div2 = ["Thunder", "Wind", "Light", "Dark"];
+var larcanas = ["stat", "Fool", "Magician", "Priestess", "Empress", "Emperor", "Hierophant", "Lovers", "Chariot", "Justice", "Hermit", "Fortune", "Strength", "Hanged Man", "Death", "Temperance", "Devil", "Tower", "Star", "Moon", "Sun", "Jester", "Aeon", "Judgment", "World"];
+
+var ldiv1 = ["Persona", "Arcana", "Physical", "Fire", "Ice"];
+var ldiv2 = ["Thunder", "Wind", "Light", "Dark"];
+var lselects = [];
 
 AddFilters("Persona", 1); AddFilters("Arcana", 1);
-list_arcanas.forEach(arc => { AddSelectOptionsArcana(document.getElementById("selectArcana"), arc); });
+let selectArcana = document.getElementById("selectArcana");
+lselects.push(selectArcana);
+AddSelectOptionsArcana(selectArcana);
 
-lista_div1.slice(2).forEach(filter => { AddFilters(filter, 1); AddSelectOptions(filter); });
-lista_div2.forEach(filter => { AddFilters(filter, 2); AddSelectOptions(filter); });
+ldiv1.slice(2).forEach(stat => { 
+  AddFilters(stat, 1);    // Add div with input / select
+  let select = document.getElementById("select" + stat);
+  lselects.push(select);    // Select saved in lselects
+  AddSelectOptions(select, stat);   // Add select options
+});
+ldiv2.forEach(stat => { 
+  AddFilters(stat, 2); 
+  let select = document.getElementById("select" + stat);
+  lselects.push(select);
+  AddSelectOptions(select, stat);
+});
 
 
 // ------------------------------------
-// Add options to Persona input
+// Add options to Persona input Compendium
+
 var datalistCompendium = document.getElementById("optsPersona");
-datos_personas_stats.forEach(persona => {
+map_stats.forEach(persona => {
   const option = document.createElement("option");
   option.value = persona[0];
   datalistCompendium.appendChild(option);
@@ -284,22 +311,11 @@ datos_personas_stats.forEach(persona => {
 // Add Persona to Compendium
 
 
-var inputPersona = document.getElementById("inputPersona");
-var selectPhysical = document.getElementById("selectPhysical");
-var selectFire = document.getElementById("selectFire");
-var selectIce = document.getElementById("selectIce");
-var selectThunder = document.getElementById("selectThunder");
-var selectWind = document.getElementById("selectWind");
-var selectLight = document.getElementById("selectLight");
-var selectDark = document.getElementById("selectDark");
-
-var list_selects = [selectArcana, selectPhysical, selectFire, selectIce, selectThunder, selectWind, selectLight, selectDark];
-
 function ValidationFilters(stats_persona) {
   if (!stats_persona[0].toLowerCase().includes(inputPersona.value.toLowerCase()) && inputPersona.value != "") { return false; }
   
   for (let i=1; i < stats_persona.length; i++) {
-    if (stats_persona[i] != list_selects[i-1].value && list_selects[i-1].value != "" && list_selects[i-1].value != "stat") { return false; }
+    if (stats_persona[i] != lselects[i-1].value && lselects[i-1].value != "" && lselects[i-1].value != "stat") { return false; }
   }
   
   return true;
@@ -309,33 +325,28 @@ var tbodyCompendium = document.getElementById("ttableCompendium");
 function AddPersonaToCompendium(stats_persona) {
   if (!ValidationFilters(stats_persona)) { return false; }
   
-  let text = "<tr>";
+  let text = document.createElement("tr");
   for (let j=0; j < stats_persona.length; j++) {
-    if (j==0 || j== 1) {
-      text += "<td>" + stats_persona[j].bold() + "</td>";
-    } else {
-      if (stats_persona[j] == "Null") {
-        text += "<td style='background-color: " + map_colors.get(stats_persona[j]) + "; color: white;'>" + stats_persona[j].bold() + "</td>";
-      } else {
-        text += "<td style='background-color: " + map_colors.get(stats_persona[j]) + ";'>" + stats_persona[j].bold() + "</td>"; 
-        
-      }
-    }
-  }
   
-  tbodyCompendium.innerHTML += text + "</tr>";
+    let td = document.createElement("td");
+    if (stats_persona[j] == "Null") { td.style.color = "white"; } 
+    
+    td.style.backgroundColor = map_colors[stats_persona[j]];
+    td.innerHTML = stats_persona[j].bold();
+    text.appendChild(td);
+  }
+  tbodyCompendium.appendChild(text);
 }
 
 function FilterCompendium() {
-  console.log("Comp");
   tbodyCompendium.innerHTML = ""; 
-  datos_personas_stats.forEach(stats_persona => AddPersonaToCompendium(stats_persona)); }
+  map_stats.forEach(stats_persona => AddPersonaToCompendium(stats_persona)); 
+}
 
 inputPersona.addEventListener("input", function() { FilterCompendium(); });
-list_selects.forEach(select => { select.addEventListener("change", function() { FilterCompendium(); }) });
+lselects.forEach(select => { select.addEventListener("change", function() { FilterCompendium(); }) });
 
 FilterCompendium();
-
 
 
 </script>
