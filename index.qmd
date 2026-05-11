@@ -12,6 +12,7 @@ execute:
   echo: false
 ---
 
+
 This page is dedicated to ease the management of your Personas in the game Persona 4. In order to it, it is shown the following properties in different tables: Strengths and Weaknesses, Attacks and Defenses.
 
 
@@ -102,11 +103,11 @@ This page is dedicated to ease the management of your Personas in the game Perso
       <th>Persona</th>    <!-- Encabezado -->
       <th>Arcana</th>
       <th>Def Up</th>
-      <th>Attack Up</th>
-      <th>Hit/Evasion Up</th>
+      <th>At Up</th>
+      <th>H/E Up</th>
       <th>Def Down</th>
-      <th>Attack Down</th>
-      <th>Hit/Evasion Down</th>
+      <th>At Down</th>
+      <th>H/E Down</th>
       
     </tr>
   </thead>
@@ -133,24 +134,26 @@ This page is dedicated to ease the management of your Personas in the game Perso
 
 
 ```{=html}
-<table border="1" id="tableCompendium">
-  <thead>
-    <tr>
-      <th>Persona</th>
-      <th>Arcana</th>
-      <th>Phys</th>
-      <th>Fire</th>
-      <th>Ice</th>
-      <th>Thunder</th>
-      <th>Wind</th>
-      <th>Light</th>
-      <th>Dark</th>
-    </tr>
-  </thead>
-  <tbody id="ttableCompendium">
-
-  </tbody>
-</table>
+<div id="divTableCompendium">
+  <table border="1" id="tableCompendium" class="tableCompendium">
+    <thead>
+      <tr>
+        <th>Persona</th>
+        <th>Arcana</th>
+        <th>Phys</th>
+        <th>Fire</th>
+        <th>Ice</th>
+        <th>Thunder</th>
+        <th>Wind</th>
+        <th>Light</th>
+        <th>Dark</th>
+      </tr>
+    </thead>
+    <tbody id="ttableCompendium">
+  
+    </tbody>
+  </table>
+</div>
 ```
 
 

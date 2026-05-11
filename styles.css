@@ -1,22 +1,23 @@
 
-table {
-  border: 1px solid #000;
-  table-layout: fixed;
-  border-collapse: collapse;
-  width: 100%;
-}
-table th {
-  text-align: center;
-}
-table tbody td {
-  border: 1px solid #000;
-  text-align: center;
-  overflow: hidden;
-  padding: 5px;
-  height: 40px;
-  width: 400px;
+main.content {
+  max-width: 100% !important;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
 }
 
+body { font-size: 18px; }
+
+section {
+  width: 1000px;
+  margin-left: -15%;
+  overflow-x: auto;
+}
+
+h1, h2 { text-align: center; }
+
+.panel-tabset { width: fit-content; }
 
 .divPersonaSelectTable {
   display: flex;
@@ -25,6 +26,24 @@ table tbody td {
   gap: 60px;
   margin-top: 30px;
   margin-bottom: 30px;
+}
+
+table thead tr{
+  border: 1px solid #000;
+}
+
+th {
+  width: 106.81px;
+  height: 36px;
+  text-align: center;
+  vertical-align: middle;
+}
+
+table tbody td {
+  border: 1px solid #000;
+  text-align: center;
+  overflow: hidden;
+  height: 40px;
 }
 
 .divCompendium {
@@ -36,11 +55,19 @@ table tbody td {
   margin-bottom: 30px;
 }
 
-.InputsCompendium {
-  width: 100px;
-}
+.InputsCompendium { width: 100px; }
 
 
-.tab-content {
+#divTableCompendium {
   width: 1000px;
+  padding-left: 1rem;
+  padding-right: 1rem;
 }
+
+.tableCompendium {
+  width: 100%;
+  overflow-x: auto;
+}
+
+
+
