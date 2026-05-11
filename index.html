@@ -519,7 +519,7 @@ for (let itable = 0; itable<len_ltable; itable++) { AddRows(ltable[itable], len_
 // Read excel Personas stats
 
 async function cargarDatos() {
-  const res = await fetch('./datos_personas_stats.xlsx');
+  const res = await fetch('https://angelalamo.github.io/Persona4-Team-Management/datos_personas_stats.xlsx');
   const buffer = await res.arrayBuffer();
   const rows = await readXLSXFile(buffer);
   return rows;
